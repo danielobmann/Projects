@@ -3,16 +3,18 @@
 
 # Using explicit Euler for solving SIR differential equations
 .sir_step_nonlinear = function(u0, t, r, rho, delta_t=1e-1){
-  u0 + delta_t*c(-r(t, u0)*u0[1]*u0[2], r(t, u0)*u0[1]*u0[2] - rho(t, u0)*u0[2], rho(t, u0)*u0[2])
+  reval = r(t, u0)
+  rhoeval = rho(t, u0)
+  u0 + delta_t*c(-reval*u0[1]*u0[2], reval*u0[1]*u0[2] - rhoeval*u0[2], rhoeval*u0[2])
 }
 
 # Complete calculation of SIR model results with starting values u0 and nonlinearities r and rho
 sir_nonlinear = function(u0, T, r, rho, delta_t=1e-1){
-  ret = data.frame("S" = c(u0[1]), "I" = c(u0[2]), "R" = c(u0[3]))
   steps = as.integer(T)/delta_t
+  ret = matrix(NA, nrow = steps+1, ncol=3)
+  ret[1,] = u0
   for (step in 1:steps) {
-    u0 = .sir_step_nonlinear(u0, t = step*delta_t, r=r, rho = rho, delta_t=delta_t)
-    ret = rbind(ret, list("S" = u0[1], "I"=u0[2], "R"=u0[3]))
+    ret[step+1, ] = .sir_step_nonlinear(ret[step,], t = step*delta_t, r=r, rho=rho, delta_t=delta_t)
   }
   ret
 }
