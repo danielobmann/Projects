@@ -8,7 +8,7 @@ maximum_aut = 8822000
 # ------------------------------------------------- 
 # SIR Model
 library(ggplot2)
-source('SIRModel.R')
+source('sir_implementation.R')
 
 infection_rate = function(t, u, param) param[1] + param[2]*t + param[3]*t^2 + param[4]*t^3
 recovery_rate = function(t, u, param) param[5] + param[6]*t + param[7]*t^2 + param[8]*t^3
