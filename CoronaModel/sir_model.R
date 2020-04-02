@@ -1,18 +1,33 @@
 # ------------------------------------------------- 
-# Real data 
-y_tirol = c(2,2,2,2,2,2,2,2,3,4,7,8,16,32,57,109,167,206,254,254,328,382,464,508,575,644,803,1253,1393,1623,1752,1874,1975,2222)
-y_aut = c(2,2,4,5,10,10,18,29,41,55,79,99,131,182,246,361,504,655,860,1016,1332,1646,2013,2388,2814,3244,3924,4876,5560,6398,7399,8122,8672,9541)
+# Load data and libraries
+library(ggplot2)
+source('sir_implementation.R')
+df = read.csv("data/infected.csv", sep = ";")
+df$Datum = NULL
 
 maximum_tirol = 751140 
 maximum_aut = 8822000
 # ------------------------------------------------- 
-# SIR Model
-library(ggplot2)
-source('sir_implementation.R')
+# Set up model for the infection and recovery rate
 
-infection_rate = function(t, u, param) param[1] + param[2]*t + param[3]*t^2 + param[4]*t^3
-recovery_rate = function(t, u, param) param[5] + param[6]*t + param[7]*t^2 + param[8]*t^3
+# Plot the rate to get an idea how to model it
+rate = function(y) y[2:(length(y))]/y[1:(length(y) - 1)]
+n = 3
+rate_y = na.omit(filter(rate(df$T), rep(1/n, n), sides = 2))
+plot(rate_y, type='l', lwd=2, ylab="Rate with running average")
 
+logistic_deriv = function(t, a=0.1, b=5, c=0.95, d=1.5){
+  d*a*exp(-a*t + b)/(1 + exp(-a*t + b))^2 + c
+}
+
+tx = seq(1,100, by=0.1)
+plot(tx, logistic_deriv(tx))
+
+infection_rate = function(t, u, param) logistic_deriv(t, a=param[1], b=param[2], c=param[3], d=param[4])
+recovery_rate = function(t, u, param) logistic_deriv(t, a=param[5], b=param[6], c=param[7], d=param[8])
+
+
+# Output of complete model for given rate models
 model = function(parameter, u0, delta_t=1e-1) {
   r = function(t, u) infection_rate(t, u, param = parameter)
   rho = function(t, u) recovery_rate(t, u, param = parameter)
@@ -21,9 +36,7 @@ model = function(parameter, u0, delta_t=1e-1) {
   ret
 }
 
-# Take data to guess the infection rate
-
-I0 = y_tirol[1]/maximum_tirol # Initial value must be chosen such that it reflects the first time numer of people infected
+I0 = df$T[1]/maximum_tirol # Initial value must be chosen such that it reflects the first time numer of people infected
 u0 = c(1-I0, I0, 0)
 
 logprior = function(parameter) {
@@ -74,32 +87,33 @@ run_MH = function(parameter0, prop_sd, y, niter=1e4, delta_t=1/24){
   parameter.save
 }
 
+plot_results = function(samples, y, u0, delta_t=1e-1){
+  m = apply(accepted_samples, 2, function(x) c(quantile(x, probs = 0.1), mean(x), quantile(x, probs = 0.9)))
+  m[, ncol(m)-1] = max(m[, ncol(m) - 1])
+  
+  fit = apply(m, 1, function(x) as.numeric(model(x, u0 = u0, delta_t = delta_t)$I))
+  tx = seq(0, as.integer(m[1, ncol(m)-1]), by=delta_t)
+  
+  matplot(tx, fit, type = 'l', col = c(1,2,1), lwd = c(1,2,1), lty = c(2,1,2))
+  idx = seq(1, length(y)/delta_t, by = as.integer(1/delta_t))
+  points(tx[idx], y, col='blue')
+}
+
 
 # --------------------------------------------------------------
 # Run simulations
-y = y_tirol/maximum_tirol
+y = df$T/maximum_tirol
 delta_t = 1e-1
 
 # PARAMETER: C(infection_rate_coefficients, recovery_rate_coefficients, T, sigma)
-prop_sd = c(rep(0.1, 8), 1, 0.01)
+prop_sd = c(rep(0.01, 8), 1, 0.01)
 parameter0 = c(rep(0.1, 8), 50, 0.1)
 
 samples = run_MH(parameter0, prop_sd, y = y, niter = 1e4, delta_t = delta_t)
 accepted_samples = samples[samples$Accepted == 1, -ncol(samples)]
+summary(accepted_samples)
 
-# TODO: Write function to plot the results
-
-plot_results = function(samples, y, u0, delta_t=1e-1){
-  m = as.numeric(apply(samples, 2, mean))
-  T = m[length(m)-1]
-  tx = seq(0, T, by=delta_t)
-  out = model(m, u0, delta_t = delta_t)
-  matplot(tx, out$I, type = 'l', col = 'blue', lwd = 2)
-  idx = seq(1, length(y)/delta_t, by = as.integer(1/delta_t))
-  points(tx[idx], y, col='red')
-}
-
-plot_results(accepted_samples, y, u0)
+plot_results(accepted_samples, y, u0, delta_t = delta_t)
 
 
 
