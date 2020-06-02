@@ -27,6 +27,8 @@ def get_time():
 wait_time = 600  # waiting time in seconds
 f = open("kicount.txt", "w")
 
+print("Start scraping!")
+
 while True:
 
     time.sleep(wait_time)
@@ -39,5 +41,6 @@ while True:
     f.write(line_str)
     f.writelines("\n")
     f.flush()
+    print("Got new datapoint.")
 
 f.close()
