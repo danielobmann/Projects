@@ -28,14 +28,14 @@ wait_time = 600  # waiting time in seconds
 f = open("kicount.txt", "w")
 
 while True:
-    # wait 10 minutes
+
     time.sleep(wait_time)
-    # get current count
+
     current, total = get_current()
     hour, mins, day = get_time()
     line = [current, total, hour, mins, day]
     line_str = ','.join((str(l) for l in line))
-    # write current count
+
     f.write(line_str)
     f.writelines("\n")
     f.flush()
