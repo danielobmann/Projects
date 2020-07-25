@@ -6,14 +6,15 @@ class Maze:
     def __init__(self, n=5):
         self.n = n
         self.GAMMA = 0.9
-        self.ACTIONS = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]]) # Actions consist of up, down, left, right, stay
+        self.ACTIONS = np.array([[-1, 0], [1, 0], [0, -1], [0, 1], [0, 0]]) # Actions consist of up, down, left, right, stay
+        self.actions = ['up', 'down', 'left', 'right', 'stay']
         self.STATES = [s for s in product(range(n), repeat=2)]
 
         self.maze = np.zeros((n, n))
-        self.s0 = 0
         self.goal = n*n-1
         self.policy_table = np.random.choice([0, 1, 2, 3], n**2)
         self.state_value = np.zeros(n*n)
+        self.maze = self.initialize_maze(n)
 
         '''Actions are encoded using 0, 1, 2 and 3 and states are encoded using 0,...,24.
         There corresponding action/state in 2D can be obtained using ACTIONS and STATES.'''
@@ -32,9 +33,7 @@ class Maze:
         return 0
 
     def reward(self, s):
-        if s == self.goal:
-            return 10
-        return -0.5
+        return self.maze.flatten()[s]
 
     def action_reward(self, s, a):
         total = 0
@@ -74,26 +73,36 @@ class Maze:
         D = {0: "Up", 1: "Down", 2: "Left", 3: "Right"}
         return [D[self.policy_table[i]] for i in range(self.n**2)]
 
+    def initialize_maze(self, n):
+        maze = np.ones((n, n))*(-1)
+        idx = np.random.choice(self.n**2)
+        maze[self.STATES[idx]] = 10
+        return maze
+
+    def discrete_matshow(self, data):
+        # get discrete colormap
+        cmap = plt.get_cmap('RdBu', np.max(data) - np.min(data) + 1)
+        mat = plt.matshow(data, cmap=cmap, vmin=np.min(data) - .5, vmax=np.max(data) + .5)
+        N = len(self.actions)
+        cbar = plt.colorbar(mat, ticks=[i for i in range(N)])
+        cbar.ax.get_yaxis().set_ticks([])
+        for j, lab in enumerate(self.actions):
+            cbar.ax.text(1.0, (N * j + 1) / N, lab, ha='center', va='center', rotation=90)
+
+    def plot(self):
+        self.discrete_matshow(self.policy_table.reshape((self.n, self.n)))
+        plt.clf()
+
+        plt.imshow(self.maze)
+        plt.colorbar()
 
 
 
-
-M = Maze()
+M = Maze(n = 10)
 M.policy_iteration()
 
-
-plt.imshow()
-plt.colorbar(ticks=[0, 1, 2, 3])
+M.discrete_matshow(M.policy_table.reshape((10, 10)))
 
 
-def discrete_matshow(data):
-    #get discrete colormap
-    cmap = plt.get_cmap('RdBu', np.max(data)-np.min(data)+1)
-    mat = plt.matshow(data, cmap=cmap, vmin=np.min(data)-.5, vmax=np.max(data)+.5)
-    cbar = plt.colorbar(mat, ticks=np.arange(np.min(data), np.max(data)+1))
-    cbar.ax.get_yaxis().set_ticks([])
-    for j, lab in enumerate(['Up', 'Down', 'Left', 'Right']):
-        cbar.ax.text(1.0, (4*j + 1)/4, lab, ha='center', va='center', rotation=90)
-
-
-discrete_matshow(M.policy_table.reshape((5,5)))
+plt.imshow(M.state_value.reshape((10, 10)))
+plt.colorbar()

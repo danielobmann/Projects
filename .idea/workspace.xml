@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57dbf3d4-caef-413d-90dc-1061281825db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Maze/maze.py" beforeDir="false" afterPath="$PROJECT_DIR$/Maze/maze.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Maze/maze_improved.py" beforeDir="false" afterPath="$PROJECT_DIR$/Maze/maze_improved.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,13 +39,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Maze/maze_improved.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="359">
-              <caret line="95" column="82" selection-start-line="95" selection-start-column="82" selection-end-line="95" selection-end-column="82" />
+            <state relative-caret-position="478">
+              <caret line="107" column="14" lean-forward="true" selection-start-line="107" selection-start-column="14" selection-end-line="107" selection-end-column="14" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#754#936#0" />
                 <element signature="e#991#1067#0" />
-                <element signature="e#1102#1162#0" />
                 <element signature="e#1207#1455#0" />
                 <element signature="e#1510#1828#0" />
                 <element signature="e#1882#2250#0" />
@@ -67,6 +66,7 @@
     <findStrings>
       <find>policy</find>
       <find>get_new_state</find>
+      <find>s0</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -214,13 +214,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Maze/maze_improved.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
-          <caret line="95" column="82" selection-start-line="95" selection-start-column="82" selection-end-line="95" selection-end-column="82" />
+        <state relative-caret-position="478">
+          <caret line="107" column="14" lean-forward="true" selection-start-line="107" selection-start-column="14" selection-end-line="107" selection-end-column="14" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#754#936#0" />
             <element signature="e#991#1067#0" />
-            <element signature="e#1102#1162#0" />
             <element signature="e#1207#1455#0" />
             <element signature="e#1510#1828#0" />
             <element signature="e#1882#2250#0" />
