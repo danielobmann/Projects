@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57dbf3d4-caef-413d-90dc-1061281825db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Maze/maze_improved.py" beforeDir="false" afterPath="$PROJECT_DIR$/Maze/maze_improved.py" afterDir="false" />
-    </list>
+    <list default="true" id="57dbf3d4-caef-413d-90dc-1061281825db" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Maze/maze_improved.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
-              <caret line="107" column="14" lean-forward="true" selection-start-line="107" selection-start-column="14" selection-end-line="107" selection-end-column="14" />
+            <state relative-caret-position="-355">
+              <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#754#936#0" />
@@ -152,7 +150,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1670179" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -214,8 +211,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Maze/maze_improved.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
-          <caret line="107" column="14" lean-forward="true" selection-start-line="107" selection-start-column="14" selection-end-line="107" selection-end-column="14" />
+        <state relative-caret-position="-355">
+          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#754#936#0" />
