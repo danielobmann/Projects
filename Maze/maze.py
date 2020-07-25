@@ -93,15 +93,11 @@ class Maze:
         maze = np.zeros((5, 5))
         return maze
 
-    def plot_path(self):
-
 
 
 
 M = Maze()
-M.policy_iteration()
 
-plt.imshow(M.policy_table)
+M.policy_evaluation()
 
-
-
+plt.imshow(M.state_value.reshape((5, 5)))
