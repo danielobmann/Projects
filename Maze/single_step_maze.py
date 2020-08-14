@@ -6,14 +6,15 @@ class Maze:
     '''The maze instance is eht environment on which the agent acts.
     It is able to give the current state, give reward based on an action taken
     and keeps track of where the agent was and is.'''
-    def __init__(self, size=5):
+    def __init__(self, size=5, max_tries=3):
         self.size = size
+        self.max_tries = max_tries
         self.maze, self.position_x, self.position_y = self.get_initial_position()
         self.finished = False
-        self._history = {'maze': [self.maze], 'position': [[self.position_x, self.position_y]]}
+        self._history = {'maze': [self.maze.copy()], 'position': [(self.position_x, self.position_y)]}
 
     def get_initial_position(self):
-        maze = np.zeros((self.size, self.size))
+        maze = np.zeros((self.size, self.size), dtype=np.int8)
         i0, j0 = np.random.choice(self.size), np.random.choice(self.size)
         maze[i0, j0] = -1
         return maze, i0, j0
@@ -23,11 +24,15 @@ class Maze:
         self.position_y = (self.position_y + action[1]) % self.size
         reward = self.maze[self.position_x, self.position_y]
         self.maze[self.position_x, self.position_y] -= 1
-        self._history['maze'].append(self.maze)
-        self._history['position'].append([self.position_x, self.position_y])
+        self._history['maze'].append(self.maze.copy())
+        self._history['position'].append((self.position_x, self.position_y))
 
         if not (self.maze == 0).any():
             reward = 5
+            self.finished = True
+
+        if (self.maze <= -self.max_tries).any():
+            reward = -5
             self.finished = True
 
         return reward
@@ -35,8 +40,19 @@ class Maze:
     def get_current_state(self):
         return self.maze, self.position_x, self.position_y
 
+    def reset(self):
+        self.maze, self.position_x, self.position_y = self.get_initial_position()
+        self.finished = False
+        self._history = {'maze': [self.maze.copy()], 'position': [(self.position_x, self.position_y)]}
+        pass
+
     def plot_solution(self, path):
-        imageio.mimsave(path, self._history['maze'], fps=1)
+        ims = []
+        for im, pos in zip(self._history['maze'], self._history['position']):
+            a = im + self.max_tries
+            a[pos] = 2*self.max_tries
+            ims.append(a.astype(int))
+        imageio.mimsave(path, ims, fps=1)
 
 
 class Agent:
@@ -51,14 +67,15 @@ class Agent:
         return self.actions[i]
 
 
-size = 2
-M = Maze(size=size)
+M = Maze(size=10)
 A = Agent()
+reward = 0
 
 while not M.finished:
     state, position_x, position_y = M.get_current_state()
     action = A.get_action(state, position_x, position_y)
-    M.take_action(action=action)
+    reward += M.take_action(action=action)
 
 
+print(reward)
 M.plot_solution("Maze/test.gif")
